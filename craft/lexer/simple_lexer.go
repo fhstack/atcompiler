@@ -27,7 +27,6 @@ func (sl *SimpleLexer) Tokenize(code []byte) token.TokenReader {
 		switch state {
 		case FSMState_Initial:
 			state = sl.initToken(c)
-
 		case FSMState_Plus, FSMState_Minus, FSMState_Star, FSMState_Slash, FSMState_Semicolon, FSMState_LeftParen,
 			FSMState_RightParen, FSMState_Assignment, FSMState_EQ, FSMState_LE, FSMState_GE,
 			FSMState_Int:

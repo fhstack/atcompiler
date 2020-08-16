@@ -1,5 +1,6 @@
 package token
 
+// SimpleTokenReader implements SimpleToken interface
 type SimpleTokenReader struct {
 	tokenList []Token
 	curPos    int // 当前读取位置

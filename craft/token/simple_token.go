@@ -1,5 +1,6 @@
 package token
 
+// SimpleToken implements Token interface
 type SimpleToken struct {
 	TokenType TokenType
 	Text      string
