@@ -36,7 +36,8 @@ func (c *SimpleCalculator) parse(code string) (ast.ASTNode, error) {
 func (c *SimpleCalculator) Evaluate(script string) {
 	tree, err := c.parse(script)
 	if err != nil {
-		panic(err)
+		fmt.Printf("语法解析错误: %v\n", err)
+		return
 	}
 
 	fmt.Println("语法树")
@@ -124,8 +125,44 @@ func (c *SimpleCalculator) program(tokens token.TokenReader) (*ast.SimpleASTNode
 
 // intDeclare 整型变量声明语句解析 如 int a; int a = 2 + 3;
 func (c *SimpleCalculator) intDeclare(tokens token.TokenReader) (*ast.SimpleASTNode, error) {
+	var node *ast.SimpleASTNode
+	curToken := tokens.Peek()
+	if curToken != nil && curToken.GetType() == token.Int {
+		tokens.Read() // 消耗掉int关键字
 
-	return nil, nil
+		curToken = tokens.Peek()
+		if curToken != nil && curToken.GetType() == token.Indentifier {
+			tokens.Read() // 消耗掉标识符
+			node = ast.NewSimpleASTNode(curToken.GetText(), ast.ASTNodeType_IntDeclaration)
+
+			curToken = tokens.Peek()
+			// 该分支可有可无
+			if curToken != nil && curToken.GetType() == token.Assignment {
+				tokens.Read() // 消耗掉等号
+				if child, err := c.additive(tokens); err != nil {
+					return nil, err
+				} else if child != nil {
+					node.AddChild(child)
+				} else {
+					return nil, errors.New("intDeclare expecting expressing")
+				}
+
+			}
+		} else {
+			return nil, errors.New("intDeclare expecting Int key word")
+		}
+	}
+
+	if node != nil {
+		curToken = tokens.Peek()
+		if curToken != nil && curToken.GetType() == token.Semicolon {
+			tokens.Read()
+		} else {
+			return nil, errors.New("intDeclare expecting ';' in the end")
+		}
+	}
+
+	return node, nil
 }
 
 // additive 语法解析：加法表达式  add -> mul | mul + add
