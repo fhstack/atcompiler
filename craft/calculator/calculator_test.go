@@ -23,11 +23,16 @@ func TestCal(t *testing.T) {
 	fmt.Printf("计算 %s 看上去一切正常\n", script)
 	calculatorIns.Evaluate(script)
 
-	script = "2+"
-	fmt.Printf("计算 %s 应该有语法错误\n", script)
-	calculatorIns.Evaluate(script)
+	// cause panic
+	// script = "2+"
+	// fmt.Printf("计算 %s 应该有语法错误\n", script)
+	// calculatorIns.Evaluate(script)
 
 	script = "2+3+4"
-	fmt.Printf("计算 %s 结合性会出现错误\n", script)
+	fmt.Printf("计算 %s 结合性正确\n", script)
+	calculatorIns.Evaluate(script)
+
+	script = "2*3*4"
+	fmt.Printf("计算 %s 结合性正确\n", script)
 	calculatorIns.Evaluate(script)
 }

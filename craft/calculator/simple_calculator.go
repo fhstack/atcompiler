@@ -11,7 +11,7 @@ import (
 )
 
 // SimpleCalculator 一个计算器，其语法规则如下:
-// add -> mul | mul + add
+// add -> mul (+mul)*
 // mul -> pri | pri * mul
 // 递归项在右边，因此是右结合性，而我们需要左结合，故结合性有一定问题
 type SimpleCalculator struct{}
@@ -165,7 +165,7 @@ func (c *SimpleCalculator) intDeclare(tokens token.TokenReader) (*ast.SimpleASTN
 	return node, nil
 }
 
-// additive 语法解析：加法表达式  add -> mul | mul + add
+// additive 语法解析：加法表达式  add -> mul (+mul)*
 func (c *SimpleCalculator) additive(tokens token.TokenReader) (*ast.SimpleASTNode, error) {
 	child1, err := c.multiplicative(tokens)
 	if err != nil {
@@ -173,21 +173,28 @@ func (c *SimpleCalculator) additive(tokens token.TokenReader) (*ast.SimpleASTNod
 	}
 	node := child1
 
-	if child1 != nil && tokens.Peek() != nil {
-		if nextType := tokens.Peek().GetType(); nextType == token.Plus || nextType == token.Minus {
-			curToken := tokens.Read()
-			child2, err := c.additive(tokens)
-			if err != nil {
-				return nil, err
+	if child1 != nil {
+		for {
+			nextToken := tokens.Peek()
+			if nextToken == nil {
+				break
 			}
-			if child2 == nil {
-				return nil, errors.New("SimpleCalculator additive parse error")
+			if nextType := nextToken.GetType(); nextType == token.Plus || nextType == token.Minus {
+				curToken := tokens.Read()
+				child2, err := c.multiplicative(tokens)
+				if err != nil {
+					return nil, errors.New("SimpleCalculator additive parse error")
+				}
+				node = ast.NewSimpleASTNode(curToken.GetText(), ast.ASTNodeType_Additive)
+				node.AddChild(child1)
+				node.AddChild(child2)
+				child1 = node // 注意新节点之后也是作为其他的子节点
+			} else {
+				break
 			}
-			node = ast.NewSimpleASTNode(curToken.GetText(), ast.ASTNodeType_Additive)
-			node.AddChild(child1)
-			node.AddChild(child2)
 		}
 	}
+
 	return node, nil
 }
 
