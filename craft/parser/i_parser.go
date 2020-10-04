@@ -6,5 +6,4 @@ import (
 
 type Parser interface {
 	Parse(script string) (ast.ASTNode, error)
-	DumpAST(node ast.ASTNode, indent string)
 }

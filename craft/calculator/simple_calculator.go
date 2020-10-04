@@ -131,7 +131,7 @@ func (c *SimpleCalculator) intDeclare(tokens token.TokenReader) (*ast.SimpleASTN
 		tokens.Read() // 消耗掉int关键字
 
 		curToken = tokens.Peek()
-		if curToken != nil && curToken.GetType() == token.Indentifier {
+		if curToken != nil && curToken.GetType() == token.Identifier {
 			tokens.Read() // 消耗掉标识符
 			node = ast.NewSimpleASTNode(curToken.GetText(), ast.ASTNodeType_IntDeclaration)
 
@@ -236,7 +236,7 @@ func (c *SimpleCalculator) primary(tokens token.TokenReader) (*ast.SimpleASTNode
 	if curToken.GetType() == token.IntLiteral {
 		tokens.Read()
 		return ast.NewSimpleASTNode(curToken.GetText(), ast.ASTNodeType_IntLiteral), nil
-	} else if curToken.GetType() == token.Indentifier {
+	} else if curToken.GetType() == token.Identifier {
 		tokens.Read()
 		return ast.NewSimpleASTNode(curToken.GetText(), ast.ASTNodeType_Identifier), nil
 	} else if curToken.GetType() == token.LeftParen {

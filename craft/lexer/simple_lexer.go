@@ -144,11 +144,11 @@ func (sl *SimpleLexer) initToken(c byte) FSMState {
 		newState = FSMState_Semicolon
 		sl.tokenText.WriteByte(c)
 	} else if isAlpha(c) {
-		sl.token.TokenType = token.Indentifier
+		sl.token.TokenType = token.Identifier
 		if c == 'i' {
 			newState = FSMState_Int1
 		} else {
-			sl.token.TokenType = token.Indentifier
+			sl.token.TokenType = token.Identifier
 			newState = FSMState_Id
 		}
 		sl.tokenText.WriteByte(c)
