@@ -209,7 +209,7 @@ func (p *SimpleParser) multiplicative(tokens token.TokenReader) (*ast.SimpleASTN
 		}
 
 		child1 := node
-		node = ast.NewSimpleASTNode(nextToken.GetText(), ast.ASTNodeType_Primary)
+		node = ast.NewSimpleASTNode(nextToken.GetText(), ast.ASTNodeType_Multiplicative)
 		node.AddChild(child1)
 		node.AddChild(child2)
 	}
